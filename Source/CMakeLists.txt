@@ -10,5 +10,6 @@ set(INSTALL_PATH bin CACHE STRING "Relative install path")
 # https://cmake.org/Wiki/CMake:CPackConfiguration
 install(TARGETS helloworld EXPORT helloworld_exp RUNTIME DESTINATION ${INSTALL_PATH} COMPONENT Executables)
 
+export(TARGETS helloworld FILE ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}-exports.cmake)
 install(EXPORT helloworld_exp DESTINATION lib/helloworld)
 
