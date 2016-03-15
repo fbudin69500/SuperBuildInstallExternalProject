@@ -34,3 +34,7 @@ add_custom_command(
 add_custom_target(my_install DEPENDS ${CMAKE_INSTALL_PREFIX}/bin/helloworld )
 
 install(CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" --build ${CMAKE_CURRENT_BINARY_DIR} --target my_install)")
+
+set(CPACK_GENERATOR "TGZ")
+include(CPack)
+

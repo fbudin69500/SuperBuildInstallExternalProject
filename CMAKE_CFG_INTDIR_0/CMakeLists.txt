@@ -25,4 +25,8 @@ set(projbuild hello-build)
     INSTALL_COMMAND ""
     )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${projbuild}/${CMAKE_CFG_INTDIR}/helloworld DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${projbuild}/${CMAKE_CFG_INTDIR}/helloworld DESTINATION bin)
+
+set(CPACK_GENERATOR "TGZ")
+include(CPack)
+

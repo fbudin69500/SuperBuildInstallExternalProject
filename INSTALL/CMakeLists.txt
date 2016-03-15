@@ -30,3 +30,6 @@ endif()
 
 install(PROGRAMS helloworld${exeextension} DESTINATION ${INSTALL_PATH})
 
+set(CPACK_GENERATOR "TGZ")
+include(CPack)
+

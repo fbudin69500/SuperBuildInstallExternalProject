@@ -27,3 +27,6 @@ set(projbuild hello-build)
 
 install(FILES "${projbuild}/\${CMAKE_INSTALL_CONFIG_NAME}/helloworld"
         DESTINATION "Bin")
+set(CPACK_GENERATOR "TGZ")
+include(CPack)
+
