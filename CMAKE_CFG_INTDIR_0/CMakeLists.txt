@@ -4,6 +4,8 @@ include(ExternalProject)
 
 project(My_superbuild)  
 
+message(FATAL_ERROR "This message does not work. It is solely to illustrate what NOT to do.")
+
 set(projbuild hello-build)
 
   ExternalProject_Add(hello
