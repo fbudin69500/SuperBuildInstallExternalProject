@@ -6,6 +6,8 @@ project(My_superbuild)
 
 set(projbuild hello-build)
 
+message(FATAL_ERROR "This method does not work. It is solely to illustrate a method found online.")
+
   ExternalProject_Add(hello
     ${${proj}_EP_ARGS}
     DOWNLOAD_COMMAND ""
