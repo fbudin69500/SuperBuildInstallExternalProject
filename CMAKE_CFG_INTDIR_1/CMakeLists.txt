@@ -4,6 +4,8 @@ include(ExternalProject)
 
 project(My_superbuild)  
 
+message(WARNING "Packaging does not work. Install works.")
+
 set(projbuild hello-build)
 
   ExternalProject_Add(hello
@@ -25,10 +27,14 @@ set(projbuild hello-build)
     INSTALL_COMMAND ""
     )
 
+    
+if(WIN32)
+  set(exeextension ".exe")
+endif()
 add_custom_command(
   OUTPUT ${CMAKE_INSTALL_PREFIX}/bin/helloworld 
-  COMMAND ${CMAKE_COMMAND} -E copy ${projbuild}/${CMAKE_CFG_INTDIR}/helloworld 
-          ${CMAKE_INSTALL_PREFIX}/bin/helloworld
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${projbuild}/${CMAKE_CFG_INTDIR}/helloworld${exeextension} 
+          ${CMAKE_INSTALL_PREFIX}/bin/helloworld${exeextension}
   DEPENDS hello 
   )
 add_custom_target(my_install DEPENDS ${CMAKE_INSTALL_PREFIX}/bin/helloworld )
