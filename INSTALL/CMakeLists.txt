@@ -6,6 +6,9 @@ project(My_superbuild)
 
 set(projbuild hello-build)
 
+set(INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/hello-install)
+set(INSTALL_SUBDIR_PATH bin)
+
 ExternalProject_Add(hello
     ${${proj}_EP_ARGS}
     DOWNLOAD_COMMAND ""
@@ -20,15 +23,15 @@ ExternalProject_Add(hello
       -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
       -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/hello-install
-      -DINSTALL_PATH:STRING=bin
+      -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
+      -DINSTALL_PATH:STRING=${INSTALL_SUBDIR_PATH}
   )
 
 if(WIN32)
   set(exeextension ".exe")
 endif()
 
-install(PROGRAMS helloworld${exeextension} DESTINATION ${INSTALL_PATH})
+install(PROGRAMS ${INSTALL_DIR}/${INSTALL_SUBDIR_PATH}/helloworld${exeextension} DESTINATION ${INSTALL_SUBDIR_PATH})
 
 set(CPACK_GENERATOR "TGZ")
 include(CPack)
