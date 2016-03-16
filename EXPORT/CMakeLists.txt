@@ -51,7 +51,7 @@ if(BUILD_SUPERBUILD)
 else()
   include(${SUPERBUILD_DIR}/${projbuild}/hello-exports.cmake)  # First project needs to be build before we include the file
   get_target_property(HELLO_LOCATION helloworld LOCATION)
-  install(FILES ${HELLO_LOCATION} RUNTIME DESTINATION bin COMPONENT Executables)
+  install(FILES ${HELLO_LOCATION} DESTINATION bin COMPONENT Executables)
   set(CPACK_GENERATOR "TGZ")
   include(CPack)
 
