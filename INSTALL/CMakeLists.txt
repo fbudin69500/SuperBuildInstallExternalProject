@@ -4,16 +4,17 @@ include(ExternalProject)
 
 project(My_superbuild)  
 
-set(projbuild hello-build)
+set(dependProj dependProj)
+set(dependProjBuild ${dependProj}-build)
 
-set(INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/hello-install)
+set(dependProjInstall ${CMAKE_CURRENT_BINARY_DIR}/${dependProj}-install)
 set(INSTALL_SUBDIR_PATH bin)
 
-ExternalProject_Add(hello
+ExternalProject_Add(${dependProj}
     ${${proj}_EP_ARGS}
     DOWNLOAD_COMMAND ""
-    SOURCE_DIR ../Source
-    BINARY_DIR ${projbuild}
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../Source
+    BINARY_DIR ${dependProjBuild}
     CMAKE_ARGS
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
@@ -23,15 +24,14 @@ ExternalProject_Add(hello
       -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
       -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-      -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
+      -DCMAKE_INSTALL_PREFIX:PATH=${dependProjInstall}
       -DINSTALL_PATH:STRING=${INSTALL_SUBDIR_PATH}
   )
 
 if(WIN32)
   set(exeextension ".exe")
 endif()
-
-install(PROGRAMS ${INSTALL_DIR}/${INSTALL_SUBDIR_PATH}/helloworld${exeextension} DESTINATION ${INSTALL_SUBDIR_PATH})
+install(PROGRAMS ${dependProjInstall}/${INSTALL_SUBDIR_PATH}/helloworld${exeextension} DESTINATION bin)
 
 set(CPACK_GENERATOR "TGZ")
 include(CPack)

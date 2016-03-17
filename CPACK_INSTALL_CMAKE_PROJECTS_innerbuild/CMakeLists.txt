@@ -4,16 +4,17 @@ include(ExternalProject)
 
 project(My_superbuild)  
 
-set(projbuild hello-build)
-
 option(BUILD_SUPERBUILD "Superbuild" ON)
 
+set(dependProj dependProj)
+set(dependProjBuild ${dependProj}-build)
+
 if(BUILD_SUPERBUILD)
-ExternalProject_Add(hello
+  ExternalProject_Add(${dependProj}
     ${${proj}_EP_ARGS}
     DOWNLOAD_COMMAND ""
-    SOURCE_DIR ../Source
-    BINARY_DIR ${projbuild}
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../Source
+    BINARY_DIR ${dependProjBuild}
     CMAKE_ARGS
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
@@ -23,14 +24,15 @@ ExternalProject_Add(hello
       -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
       -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/hello-install
     INSTALL_COMMAND ""
   )
-  ExternalProject_Add(hello2
+  set(mainProj mainProj)
+  set(mainProjBuild ${mainProj}-build)
+  ExternalProject_Add(${mainProj}
     ${${proj}_EP_ARGS}
     DOWNLOAD_COMMAND ""
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
-    BINARY_DIR hello2-build
+    BINARY_DIR ${mainProjBuild}
     CMAKE_ARGS
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
@@ -43,13 +45,12 @@ ExternalProject_Add(hello
       -DBUILD_SUPERBUILD:BOOL=OFF
       -DSUPERBUILD_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}
     INSTALL_COMMAND ""
-    DEPENDS hello
+    DEPENDS ${dependProj}
     )
   return()
 else()
-# Executables/ALL/
-set(CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${SUPERBUILD_DIR}/hello-build;hello;ALL;/")
-set(CPACK_GENERATOR "TGZ")
-include(CPack)
+  set(CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${SUPERBUILD_DIR}/${dependProjBuild};hello;ALL;/")
+  set(CPACK_GENERATOR "TGZ")
+  include(CPack)
 endif()
 

@@ -4,13 +4,14 @@ include(ExternalProject)
 
 project(My_superbuild)  
 
-set(projbuild hello-build)
+set(dependProj dependProj)
+set(dependProjBuild ${dependProj}-build)
 
-ExternalProject_Add(hello
+ExternalProject_Add(${dependProj}
     ${${proj}_EP_ARGS}
     DOWNLOAD_COMMAND ""
-    SOURCE_DIR ../Source
-    BINARY_DIR ${projbuild}
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../Source
+    BINARY_DIR ${dependProjBuild}
     CMAKE_ARGS
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
@@ -20,11 +21,10 @@ ExternalProject_Add(hello
       -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
       -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/hello-install
     INSTALL_COMMAND ""
   )
 # Executables/ALL/
-set(CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};hello-build;hello;ALL;/")
+set(CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${dependProjBuild};hello;ALL;/")
 set(CPACK_GENERATOR "TGZ")
 
 include(CPack)

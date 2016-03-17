@@ -8,12 +8,15 @@ set(projbuild hello-build)
 
 option(BUILD_SUPERBUILD "Superbuild" ON)
 
+set(dependProj dependProj)
+set(dependProjBuild ${dependProj}-build)
+
 if(BUILD_SUPERBUILD)
-  ExternalProject_Add(hello
+  ExternalProject_Add(${dependProj}
     ${${proj}_EP_ARGS}
     DOWNLOAD_COMMAND ""
-    SOURCE_DIR ../Source
-    BINARY_DIR ${projbuild}
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../Source
+    BINARY_DIR ${dependProjBuild}
     CMAKE_ARGS
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
@@ -23,17 +26,17 @@ if(BUILD_SUPERBUILD)
       -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
       -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/hello-install
       -DINSTALL_PATH:STRING=bin
     INSTALL_COMMAND ""
     )
-  ExternalProject_Add(hello2
+  set(mainProj mainProj)
+  set(mainProjBuild ${mainProj}-build)
+  ExternalProject_Add(${mainProj}
     ${${proj}_EP_ARGS}
     DOWNLOAD_COMMAND ""
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
-    BINARY_DIR hello2-build
+    BINARY_DIR ${mainProjBuild}
     CMAKE_ARGS
-      -DHelloImport:PATH=${projbuild}/helloworld_exp.cmake  # First project needs to be build before we include the file
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -46,17 +49,15 @@ if(BUILD_SUPERBUILD)
       -DSUPERBUILD_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}
       -DCMAKE_BUILD_TYPE_External:STRING=${CMAKE_CFG_INTDIR}
     INSTALL_COMMAND ""
-    DEPENDS hello
+    DEPENDS ${dependProj}
     )
   return()
 else()
   if(WIN32)
     set(exeextension ".exe")
   endif()
-
-  install(FILES ${SUPERBUILD_DIR}/hello-build/${CMAKE_BUILD_TYPE_External}/helloworld${exeextension} 
+  install(FILES ${SUPERBUILD_DIR}/${dependProjBuild}/${CMAKE_BUILD_TYPE_External}/helloworld${exeextension} 
           DESTINATION bin )
   set(CPACK_GENERATOR "TGZ")
   include(CPack)
-
 endif()

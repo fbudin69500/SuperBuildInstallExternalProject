@@ -4,15 +4,16 @@ include(ExternalProject)
 
 project(My_superbuild)  
 
-message(WARNING "Packaging does not work. Install works.")
+message(WARNING "Packaging does not work. Install works. Packaging will seem to work if CMAKE_INSTALL_PREFIX is set to a location that is writable, but package will be empty.")
 
-set(projbuild hello-build)
+set(dependProj dependProj)
+set(dependProjBuild ${dependProj}-build)
 
-  ExternalProject_Add(hello
+ExternalProject_Add(${dependProj}
     ${${proj}_EP_ARGS}
     DOWNLOAD_COMMAND ""
-    SOURCE_DIR ../Source
-    BINARY_DIR ${projbuild}
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../Source
+    BINARY_DIR ${dependProjBuild}
     CMAKE_ARGS
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
@@ -22,22 +23,20 @@ set(projbuild hello-build)
       -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
       -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/hello-install
-      -DINSTALL_PATH:STRING=bin
     INSTALL_COMMAND ""
-    )
+  )
 
     
 if(WIN32)
   set(exeextension ".exe")
 endif()
 add_custom_command(
-  OUTPUT ${CMAKE_INSTALL_PREFIX}/bin/helloworld 
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${projbuild}/${CMAKE_CFG_INTDIR}/helloworld${exeextension} 
+  OUTPUT ${CMAKE_INSTALL_PREFIX}/bin/helloworld${exeextension}
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${dependProjBuild}/${CMAKE_CFG_INTDIR}/helloworld${exeextension} 
           ${CMAKE_INSTALL_PREFIX}/bin/helloworld${exeextension}
   DEPENDS hello 
   )
-add_custom_target(my_install DEPENDS ${CMAKE_INSTALL_PREFIX}/bin/helloworld )
+add_custom_target(my_install DEPENDS ${CMAKE_INSTALL_PREFIX}/bin/helloworld${exeextension} )
 
 install(CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" --build ${CMAKE_CURRENT_BINARY_DIR} --target my_install)")
 

@@ -4,15 +4,16 @@ include(ExternalProject)
 
 project(My_superbuild)  
 
-message(FATAL_ERROR "This message does not work. It is solely to illustrate what NOT to do.")
+message(WARNING "This message does not work. It is solely to illustrate what NOT to do.")
 
-set(projbuild hello-build)
+set(dependProj dependProj)
+set(dependProjBuild ${dependProj}-build)
 
-  ExternalProject_Add(hello
+ExternalProject_Add(${dependProj}
     ${${proj}_EP_ARGS}
     DOWNLOAD_COMMAND ""
-    SOURCE_DIR ../Source
-    BINARY_DIR ${projbuild}
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../Source
+    BINARY_DIR ${dependProjBuild}
     CMAKE_ARGS
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
@@ -22,12 +23,14 @@ set(projbuild hello-build)
       -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
       -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/hello-install
       -DINSTALL_PATH:STRING=bin
     INSTALL_COMMAND ""
-    )
+  )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${projbuild}/${CMAKE_CFG_INTDIR}/helloworld DESTINATION bin)
+if(WIN32)
+  set(exeextension ".exe")
+endif()
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${dependProjBuild}/${CMAKE_CFG_INTDIR}/helloworld${exeextension} DESTINATION bin)
 
 set(CPACK_GENERATOR "TGZ")
 include(CPack)
