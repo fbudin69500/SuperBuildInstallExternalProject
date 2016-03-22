@@ -49,6 +49,11 @@ work around the fact that the system variable is only replaced at compilation ti
  be used when packaging the project. Packaging will be successful if `CMAKE_INSTALL_PREFIX` is configured to a
  writable location.
 
+## Approaches not explored in this project
+
+- Forcing external project to a known build type.
+- Searching in multiple subdirectories in external project build directory, starting from the most likely (e.g. 'Release')
+
 ## Results
 
 **CMAKE_CFG_INTDIR_0** and **CMAKE_CFG_INTDIR_1** fail. There might be ways to fix the errors.
