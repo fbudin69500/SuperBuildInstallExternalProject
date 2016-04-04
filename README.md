@@ -53,6 +53,10 @@ work around the fact that the system variable is only replaced at compilation ti
 
 **CMAKE_CFG_INTDIR_0** and **CMAKE_CFG_INTDIR_1** fail. There might be ways to fix the errors.
 
+## Additional information
+
+**CPACK_AND_INSTALL** is an example that shows how to package an external project from a SuperBuild project, and package additional files from the SuperBuild project.
+
 ## Contributions
 
 Contributions to this project are welcome. Feel free to submit patches for the project if you
